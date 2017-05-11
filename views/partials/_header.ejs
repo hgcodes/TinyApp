@@ -1,13 +1,12 @@
-  <form action="/login" method="post">
+ <form action="/login" method="post">
     Username:
     <input type="text" name="username">
     <input type="submit" value="Submit">
   </form>
 <!--   <%= username %> -->
-  <% if (username) { %>
-      <%= username %>
+  <% if (locals.username) { %>
+      <%= locals.username %>
     <form action="/logout" method="post">
     <input type="submit" value="Logout">
-
   </form>
  <% } %>
