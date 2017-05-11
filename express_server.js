@@ -10,6 +10,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieParser()); // later on we will be using something else instead of cookie-parser
 
+app.use (function(req, res, next) {
+  res.locals.username = req.cookies.username;
+  next();
+});
+
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls");
@@ -43,7 +48,6 @@ app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase, username: req.cookies["username"]};
   res.render("urls_index", templateVars);
 });
-
 
 
 app.get("/urls/new", (req, res) => {
@@ -80,5 +84,3 @@ app.post("/urls/:id", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Make it so!`);
 });
-
-
