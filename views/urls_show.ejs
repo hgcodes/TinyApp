@@ -5,13 +5,13 @@
 </head>
 <body>
 <header>
-  <%- include partials/_header.ejs %>
+  <!-- <%- include partials/_header.ejs %> -->
 </header>
     <h1>
-      Short URL: <%= shortURL%>
+      Short URL: <%= shortURL %>
     </h1>
 
-  <form action="/urls/<%= shortURL %>" method="post">
+  <form action="/urls/<%= shortURL %>" method="POST">
   <p>
     <label for="long-url-input">long URL</label>
     <input id="long-url-input" name="newLongUrl" value="<%= longURL %>">

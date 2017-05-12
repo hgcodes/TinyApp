@@ -4,11 +4,11 @@
     <title>Tiny App</title>
   </head>
 <body>
-  <form action="/register" method="POST">
-    E-mail:
-    <input type="text" name="email">
-    Password:
-    <input type="text" name="password">
+  <form action="/register" method="post">
+    <label for="email">email:</label>
+    <input type="email" id="email" name="email">
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password">
     <input type="submit" value="Register">
   </form>
 </body>

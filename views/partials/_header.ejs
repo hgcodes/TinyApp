@@ -1,12 +1,12 @@
- <form action="/login" method="post">
-    Username:
-    <input type="text" name="username">
-    <input type="submit" value="Submit">
-  </form>
-<!--   <%= username %> -->
-  <% if (locals.username) { %>
-      <%= locals.username %>
-    <form action="/logout" method="post">
-    <input type="submit" value="Logout">
-  </form>
- <% } %>
+<header>
+<h1>Tiny App</h1>
+  <% if (user) { %>
+    <%= user.email %>
+      <form action="/logout" method="post">
+        <input type="submit" value="Logout">
+      </form>
+  <% } else { %>
+    <a href="/register">Register Here</a><br>
+    <a href="/login">Login here</a>
+  <% } %>
+</header>
