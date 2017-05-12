@@ -1,0 +1,14 @@
+<% if (userid) { %>
+  <%= userid %>
+    <form action="/logout" method="post">
+      <input type="submit" value="Logout">
+    </form>
+<% } else { %>
+  <form action="/login" method="post">
+    <label for="email">email:</label>
+    <input type="text" id="email" name="email">
+    <label for="password">password:</label>
+    <input type="password" id="password" name="password">
+    <input type="submit" value="Submit">
+  </form>
+<% } %>
