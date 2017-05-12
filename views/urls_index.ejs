@@ -8,15 +8,27 @@
   <%- include partials/_header.ejs %>
 </header>
   <ul>
+  <% let count = 0; %>
     <% for(var key in urls) { %>
-      <li>
-        <%= key + ': ' + urls[key] %>
-        <form action="/urls/<%= key %>/delete" method="POST">
-          <a href="/urls/<%= key %>">Edit</a>
-          <button>Delete</button>
-        </form>
-      </li>
+      <% if (urls[key].userid === userid) { %>
+        <li>
+          <%= key + ': ' + urls[key].long %>
+          <form action="/urls/<%= key %>/delete" method="POST">
+            <a href="/urls/<%= key %>">Edit</a>
+            <button>Delete</button>
+          </form>
+        </li>
+        <% count++; %>
+      <% } %>
+
     <% } %>
-  </ul>
+    </ul>
+    <% if (count === 0) { %>
+    <h2>You don't have any URLs. <a href="/urls/new">Create a link now!</a></h2>
+    <% } %>
+
 </body>
 </html>
+
+
+<!-- add link to add a new URL -->

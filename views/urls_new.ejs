@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head></head>
-  <body>
-<!--     <% include partials/_header %> -->
-    <form action="/urls" method="POST">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://">
-      <input type="submit" value="Submit">
-    </form>
-  </body>
+<head>
+<title>Tiny App</title>
+</head>
+<body>
+<header>
+  <%- include partials/_header.ejs %>
+</header>
+  <form action="/urls" method="POST">
+    <label for="longURL">Enter a URL:</label>
+    <input id="longURL" type="text" name="longURL" placeholder="http://">
+    <input type="submit" value="Submit">
+  </form>
+</body>
 </html>
+

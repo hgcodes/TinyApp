@@ -5,21 +5,18 @@
 </head>
 <body>
 <header>
-  <!-- <%- include partials/_header.ejs %> -->
+<%- include partials/_header.ejs %>
 </header>
-    <h1>
-      Short URL: <%= shortURL%>
-    </h1>
+  <h1>
+    Short URL: <%= shortURL %>
+  </h1>
 
   <form action="/urls/<%= shortURL %>" method="post">
-  <p>
-    <label for="long-url-input">long URL</label>
-    <input id="long-url-input" name="newLongUrl" value="<%= longURL %>">
-  </p>
-  <p>
-    <button>Update</button>
-  </p>
-</form>
-
+    <p>
+      <label for="long-url-input">long URL</label>
+      <input id="long-url-input" name="newLongUrl" value="<%= longURL %>">
+      <button>Update</button>
+      <button>Delete</button>
+  </form>
 </body>
 </html>
