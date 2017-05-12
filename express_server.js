@@ -13,25 +13,64 @@ app.use(cookieParser()); // later on we will be using something else instead of 
 
 app.use(function (req, res, next) {
   res.locals.userid = req.cookies.user_id;
+  res.locals.user = users[req.cookies.user_id];
   next();
 });
 
+function checkUrl(req, res, next) {
+  if (urlDatabase[req.params.id]) {
+    next();
+  } else {
+    res.status(404).send("Page does not exist."); //add html to return to tinyapp index
+  }
+}
+
+function checkUser(req, res, next) {
+  if (urlDatabase[req.params.id].userid === req.cookies.user_id) {
+    next();
+  } else {
+    res.status(403).send("You aren't allowed to access this page. <a href='/urls'>Return to TinyApp.</a>");
+  }
+}
+
+function authenticate(req, res, next){
+  if (req.cookies.user_id) {
+    next();
+  } else {
+    res.status(401).send("Please <a href='/login'>login</a> to view this page.")
+  }
+}
+
+function validHttp(url){
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'http://' + url;
+    console.log(url);
+  }
+  return url;
+}
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    userid: "userRandomID",
+    short: "b2xVn2",
+    long: "http://www.lighthouselabs.ca"},
+  "9sm5xK": {
+    userid: "user2RandomID",
+    short: "9sm5xK",
+    long: "http://www.google.com"}
 };
 
 const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "password"
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
-  }
+  },
 };
 
 function generateRandomString() {
@@ -44,31 +83,39 @@ function generateRandomString() {
 }
 
 app.get("/login", (req, res) => {
-  res.render("urls_login");
+  res.render("login");
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_register");
+  res.render("register");
 });
 
-app.get("/urls", (req, res) => {
+app.get("/urls", authenticate, (req, res) => {
   let userid = req.cookies["user_id"];
-  let templateVars = { urls: urlDatabase, user: users[userid] };
+  let templateVars = { urls: urlDatabase }; // ejs
   res.render("urls_index", templateVars);
 });
 
-app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+app.get('/urls/new', authenticate, (req, res) => {
+  let user_ID = req.cookies['user_id'];
+  if (users[user_ID]) {
+    res.render('urls_new', {
+      user: users[user_ID]
+    });
+  } else {
+  res.redirect('/login');
+  }
 });
 
-app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
+app.get("/u/:id", checkUrl, (req, res) => {
+  let longURL = urlDatabase[req.params.id].long;
   res.redirect(longURL);
 });
 
-app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
-  res.render("urls_show", templateVars);
+app.get("/urls/:id", checkUrl, checkUser, (req, res) => {
+    let userid = req.cookies["user_id"];
+    let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id].long };
+    res.render("urls_show", templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -96,19 +143,24 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
-app.post("/urls", (req, res) => {
+app.post("/urls", authenticate, (req, res) => {
+  const longURL = validHttp(req.body.longURL);
   const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL] = {
+    userid: req.cookies["user_id"],
+    short: shortURL,
+    long: longURL
+  }
   res.redirect(`/urls/${shortURL}`);
 });
 
-app.post("/urls/:id/delete", (req, res) => {
+app.post("/urls/:id/delete", checkUrl, checkUser, (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
 });
 
-app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.newLongUrl;
+app.post("/urls/:id", checkUrl, checkUser, (req, res) => {
+  urlDatabase[req.params.id].long = req.body.newLongUrl;
   res.redirect("/urls");
 });
 
