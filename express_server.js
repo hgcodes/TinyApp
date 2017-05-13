@@ -1,19 +1,23 @@
-const express = require("express");
-const cookieParser = require('cookie-parser'); // later on we will be using something else instead of cookie-parser
-const bodyParser = require("body-parser");
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session')
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.set("view engine", "ejs");
+app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
-
-app.use(cookieParser()); // later on we will be using something else instead of cookie-parser
+app.use(cookieSession ({
+  name: 'session',
+  keys: [process.env.SESSION_SECRET || "development"],
+  maxAge: 24 * 60 * 60 * 1000
+}))
 
 app.use(function (req, res, next) {
-  res.locals.userid = req.cookies.user_id;
-  res.locals.user = users[req.cookies.user_id];
+  res.locals.userid = req.session.user_id;
+  res.locals.user = users[req.session.user_id];
   next();
 });
 
@@ -26,7 +30,7 @@ function checkUrl(req, res, next) {
 }
 
 function checkUser(req, res, next) {
-  if (urlDatabase[req.params.id].userid === req.cookies.user_id) {
+  if (urlDatabase[req.params.id].userid === req.session.user_id) {
     next();
   } else {
     res.status(403).send("You aren't allowed to access this page. <a href='/urls'>Return to TinyApp.</a>");
@@ -34,7 +38,7 @@ function checkUser(req, res, next) {
 }
 
 function authenticate(req, res, next){
-  if (req.cookies.user_id) {
+  if (req.session.user_id) {
     next();
   } else {
     res.status(401).send("Please <a href='/login'>login</a> to view this page.")
@@ -64,13 +68,8 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "password"
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  },
+    password: "$2a$10$1fbSVctDjIc0slVpKd9LruIed/wGEqMQ/GPZMf8oIVHBwyhYZuCPG"
+  }
 };
 
 function generateRandomString() {
@@ -91,13 +90,13 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/urls", authenticate, (req, res) => {
-  let userid = req.cookies["user_id"];
+  let userid = req.session["user_id"];
   let templateVars = { urls: urlDatabase }; // ejs
   res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', authenticate, (req, res) => {
-  let user_ID = req.cookies['user_id'];
+  let user_ID = req.session['user_id'];
   if (users[user_ID]) {
     res.render('urls_new', {
       user: users[user_ID]
@@ -113,7 +112,7 @@ app.get("/u/:id", checkUrl, (req, res) => {
 });
 
 app.get("/urls/:id", checkUrl, checkUser, (req, res) => {
-    let userid = req.cookies["user_id"];
+    let userid = req.session["user_id"];
     let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id].long };
     res.render("urls_show", templateVars);
 });
@@ -125,8 +124,8 @@ app.post("/login", (req, res) => {
   }
   for (let user in users) {
     if (users[user].email === req.body.email) {
-      if (users[user].password === req.body.password) {
-        res.cookie("user_id", users[user].id);
+      if (bcrypt.compareSync(req.body.password, users[user].password)) {
+        req.session["user_id"] = users[user].id;
         res.redirect("/urls");
         return;
       } else {
@@ -139,7 +138,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = undefined;
   res.redirect("/urls");
 });
 
@@ -147,7 +146,7 @@ app.post("/urls", authenticate, (req, res) => {
   const longURL = validHttp(req.body.longURL);
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = {
-    userid: req.cookies["user_id"],
+    userid: req.session["user_id"],
     short: shortURL,
     long: longURL
   }
@@ -181,9 +180,9 @@ app.post("/register", (req, res) => {
   users[randomId] = {
     id: randomId,
     email: req.body.email,
-    password: req.body.password
+    password: bcrypt.hashSync(req.body.password, 10)
   };
-  res.cookie("user_id", randomId);
+  req.session["user_id"] = randomId;
   res.redirect("/urls");
 });
 

@@ -17,14 +17,14 @@
             <a href="/urls/<%= key %>">Edit</a>
             <button>Delete</button>
           </form>
+          <h2><a href="/urls/new">Add a new link now!</a></h2>
         </li>
         <% count++; %>
       <% } %>
-
     <% } %>
     </ul>
     <% if (count === 0) { %>
-    <h2>You don't have any URLs. <a href="/urls/new">Create a link now!</a></h2>
+    <h3>You don't have any URLs. <a href="/urls/new">Create a link now!</a></h3>
     <% } %>
 
 </body>

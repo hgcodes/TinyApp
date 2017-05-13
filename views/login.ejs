@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<body>
+<header>
+</header>
+<body>
 <% if (userid) { %>
   <%= userid %>
     <form action="/logout" method="post">
@@ -12,3 +21,6 @@
     <input type="submit" value="Login">
   </form>
 <% } %>
+<p>Don't have an account? <a href="/register">Register now</a></p>
+</body>
+</html>

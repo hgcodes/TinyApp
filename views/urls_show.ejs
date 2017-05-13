@@ -7,9 +7,10 @@
 <header>
 <%- include partials/_header.ejs %>
 </header>
-  <h1>
-    Short URL: <%= shortURL %>
-  </h1>
+  <h1>Short URL:</h1>
+
+  <h2><a href='/u/<%= shortURL %>'>http://tiny.app/u/<%= shortURL %></a></h2>
+
 
   <form action="/urls/<%= shortURL %>" method="post">
     <p>
