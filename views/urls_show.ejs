@@ -5,19 +5,14 @@
 </head>
 <body>
 <header>
-<%- include partials/_header.ejs %>
+  <%- include partials/_header.ejs %>
 </header>
-  <h1>Short URL:</h1>
-
-  <h2><a href='/u/<%= shortURL %>'>http://tiny.app/u/<%= shortURL %></a></h2>
-
-
+  <h4>Short URL: <a href='/u/<%= shortURL %>'>http://tiny.app/u/<%= shortURL %></a></h4>
   <form action="/urls/<%= shortURL %>" method="post">
-    <p>
-      <label for="long-url-input">long URL</label>
-      <input id="long-url-input" name="newLongUrl" value="<%= longURL %>">
-      <button>Update</button>
-      <button>Delete</button>
+    <label for="long-url-input">Long URL:</label>
+      <input id="long-url-input" name="newLongUrl" value="<%= longURL %>"><br>
+    <button>Update</button>
   </form>
+  <p>Return to your saved URLS <a href='/urls'>here.</a></p>
 </body>
 </html>

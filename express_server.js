@@ -25,7 +25,7 @@ function checkUrl(req, res, next) {
   if (urlDatabase[req.params.id]) {
     next();
   } else {
-    res.status(404).send("Page does not exist."); //add html to return to tinyapp index
+    res.status(404).send("Page does not exist. <a href='/urls'>Return to TinyApp.</a>"); //add html to return to tinyapp index
   }
 }
 
@@ -41,7 +41,7 @@ function authenticate(req, res, next){
   if (req.session.user_id) {
     next();
   } else {
-    res.status(401).send("Please <a href='/login'>login</a> to view this page.")
+    res.status(401).send("Please <a href='/login'>login</a> or <a href='/register'>register</a> to view this page.")
   }
 }
 
@@ -119,7 +119,7 @@ app.get("/urls/:id", checkUrl, checkUser, (req, res) => {
 
 app.post("/login", (req, res) => {
   if (!req.body.email || !req.body.password) {
-    res.status(400).send("Please enter both email and password");
+    res.status(400).send("Please enter both email and password. Return to <a href='/login'>login</a> page.");
     return;
   }
   for (let user in users) {
@@ -129,12 +129,12 @@ app.post("/login", (req, res) => {
         res.redirect("/urls");
         return;
       } else {
-          res.status(403).send("password for this email is not correct");
+          res.status(403).send("Password for this email is not correct. Return to <a href='/login'>login</a> page.");
           return;
       }
     }
   }
-  res.status(403).send("email does not match any user account");
+  res.status(403).send("Email does not match any user account. Return to <a href='/login'>login</a> page.");
 });
 
 app.post("/logout", (req, res) => {
@@ -166,13 +166,13 @@ app.post("/urls/:id", checkUrl, checkUser, (req, res) => {
 app.post("/register", (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.status(400);
-    res.send("Please enter email and/or password");
+    res.send("Please enter email and password. Return to <a href='/register'>registration</a> page.");
     return;
   }
 
   for (let user in users) {
     if (users[user].email === req.body.email) {
-      res.status(400).send("Email matches an account that already exists");
+      res.status(400).send("Email matches an account that already exists. Please <a href='/login'>login</a>.");
       return;
     }
   }
@@ -182,7 +182,7 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10)
   };
-  req.session["user_id"] = randomId;
+  req.session["user_id"] = randomId[email];
   res.redirect("/urls");
 });
 
