@@ -5,6 +5,7 @@
 </head>
 <body>
 <header>
+<h1>TinyApp</h1>
 </header>
 <body>
 <% if (userid) { %>
@@ -15,12 +16,12 @@
 <% } else { %>
   <form action="/login" method="post">
     <label for="email">email:</label>
-    <input type="text" id="email" name="email">
-    <label for="password">password:</label>
-    <input type="password" id="password" name="password">
-    <input type="submit" value="Login">
+      <input type="text" id="email" name="email">
+        <label for="password">password:</label>
+      <input type="password" id="password" name="password">
+      <input type="submit" value="Login">
   </form>
 <% } %>
-<p>Don't have an account? <a href="/register">Register now</a></p>
+  <p>Don't have an account? <a href="/register">Register now</a></p>
 </body>
 </html>

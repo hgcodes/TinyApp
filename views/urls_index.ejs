@@ -11,20 +11,20 @@
   <% let count = 0; %>
     <% for(var key in urls) { %>
       <% if (urls[key].userid === userid) { %>
-          <li>
-            <h3><a href='/u/<%= key %>''>http://tiny.app/u/<%= key %></a> : <%= urls[key].long %></h3>
-            <form action="/urls/<%= key %>/delete" method="POST">
-              <a href="/urls/<%= key %>">Edit</a>
-              <button>Delete</button>
-            </form>
-          </li>
-        <% count++; %>
+        <li>
+          <h3><a href='/u/<%= key %>''>http://tiny.app/u/<%= key %></a> : <%= urls[key].long %></h3>
+          <form action="/urls/<%= key %>/delete" method="POST">
+            <a href="/urls/<%= key %>">Edit</a>
+            <button>Delete</button>
+          </form>
+        </li>
+      <% count++; %>
       <% } %>
     <% } %>
     </ul>
     <% if (count === 0) { %>
-    <h3>You don't have any saved URLs.</h3>
-    <% } %>
-    <h3><a href="/urls/new">Create a new short link now!</a></h3>
+  <h3>You don't have any saved URLs.</h3>
+  <% } %>
+  <h3><a href="/urls/new">Create a new short link now!</a></h3>
 </body>
 </html>
