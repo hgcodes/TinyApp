@@ -3,7 +3,7 @@
 Tinyapp is a full stack web application built with Node and Express that allows registered users to create their own collection of shortened URLs (à la bit.ly). This TinyApp project was written with three custom middlewares (checkUrl, checkUser and authenticate).
 
 ## Final Project
-Screenshots of index page, login page, and user homepage.
+
 <img width="352" alt="screenshot of tinyapp index page" src="https://cloud.githubusercontent.com/assets/25554023/26039704/fdefd3c2-38d2-11e7-953f-f9e273140fd2.png">
 TinyApp Index Page
 
